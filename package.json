@@ -1,0 +1,12 @@
+{
+  "name": "exceljs_learning",
+  "version": "1.0.0",
+  "author": "syauqi husin",
+  "license": "MIT",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "private": true
+}
