@@ -8,13 +8,23 @@ async function readExcelFile() {
 
         const sheet = workbook.getWorksheet(1);
 
+        const headerMap = {
+            1: "id",
+            2: "name",
+            3: "age"
+        }
+
         const data = []
 
         sheet.eachRow((row, rowNumber) => {
             if(rowNumber === 1) return;
+
             const rowData = {};
             row.eachCell((cell, colNumber) => {
-                rowData[sheet.getColumn(colNumber).name] = cell.value;
+const key = headerMap[colNumber];
+if(key) {
+    rowData[key] = cell.value;
+}
             });
             data.push(rowData);
         });
