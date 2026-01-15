@@ -5,10 +5,19 @@ import { READ_EXCEL_FILES } from "./exceljsReadfile.js";
 import { inserdatatodb, getAllStudents } from "./exceljsInsertData.js";
 import { slow_down } from "./middleware/throttleslowdown.js";
 import {rate_limit} from "./middleware/ratelimit.js";
+import {configDotenv} from "dotenv";
+import * as dotenv from "dotenv";
+import path from 'path'
+import { fileURLToPath } from 'url';
+
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+dotenv.config();
 
 const app = express();
-const PORT = 3000;
-
+const PORT_SERVER = process.env.PORT_SERVER;
 
 
 // Configure Multer to use memory storage
@@ -60,6 +69,12 @@ app.get('/students', async (req, res) => {
     }
 });
 
-app.listen(PORT, () => {
-    console.log(`Server running on port: ${PORT}`);
+app.use(express.static(path.join(__dirname, 'public')));
+
+app.get('/',(req,res)=>{
+    res.sendFile(__dirname + '/public/inputexcel.html')
+})
+
+app.listen(PORT_SERVER, () => {
+    console.log(`Server running on ${process.env.URL_SET}${PORT_SERVER}`);
 });
