@@ -9,7 +9,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node --watch app.js",
-    "dev": "nodemon app.js"
+    "dev": "nodemon app.js",
+    "tw": "npx @tailwindcss/cli -i public/style/stylein.css -o public/style/styleout.css --watch"
   },
   "private": true,
   "dependencies": {

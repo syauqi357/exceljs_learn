@@ -2,7 +2,7 @@ import ExcelJS from "exceljs";
 import express from "express";
 import multer from "multer";
 import { READ_EXCEL_FILES } from "./exceljsReadfile.js";
-import { inserdatatodb, getAllStudents } from "./exceljsInsertData.js";
+import { INSERTDATA_TO_DATABASE, getAllStudents } from "./exceljsInsertData.js";
 import { slow_down } from "./middleware/throttleslowdown.js";
 import {rate_limit} from "./middleware/ratelimit.js";
 import {configDotenv} from "dotenv";
@@ -17,7 +17,7 @@ const __dirname = path.dirname(__filename);
 dotenv.config();
 
 const app = express();
-const PORT_SERVER = process.env.PORT_SERVER;
+const PORT = process.env.PORT_SERVER;
 
 
 // Configure Multer to use memory storage
@@ -37,7 +37,7 @@ app.use((req, res, next) => {
     next();
 });
 
-app.post('/upload', upload.single('excelFile'), async (req, res) => {
+app.post('/uploads', upload.single('excelFile'), async (req, res) => {
     if (!req.file) {
         return res.status(400).json({ message: 'No file uploaded' });
     }
@@ -51,7 +51,7 @@ app.post('/upload', upload.single('excelFile'), async (req, res) => {
         const data = await READ_EXCEL_FILES(workbook);
 
         // Insert data into database
-        await inserdatatodb(data);
+        await INSERTDATA_TO_DATABASE(data);
 
         res.json({ message: 'File processed and data inserted successfully', data });
     } catch (e) {
@@ -75,6 +75,6 @@ app.get('/',(req,res)=>{
     res.sendFile(__dirname + '/public/inputexcel.html')
 })
 
-app.listen(PORT_SERVER, () => {
-    console.log(`Server running on ${process.env.URL_SET}${PORT_SERVER}`);
+app.listen(PORT, () => {
+    console.log(`Server running on ${process.env.URL_SET}${PORT}`);
 });

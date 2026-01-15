@@ -1,5 +1,7 @@
 // import Exceljs, {stream} from "exceljs";
 
+import res from "express/lib/response.js";
+
 export async function READ_EXCEL_FILES(workbook) {
 
     try{
@@ -34,11 +36,14 @@ export async function READ_EXCEL_FILES(workbook) {
 
             DATA_JSON_PARSE.push(rowData);
         });
-        console.log("excel file content :");
-        console.log(DATA_JSON_PARSE);
+        // console.log("excel file content :");
+        // console.log(DATA_JSON_PARSE);
         return DATA_JSON_PARSE;
     } catch(error) {
-        console.error("error :", error.message);
+        res.json({
+            "error ": error.message
+        })
+        // console.error("error :", error.message);
         return [];
     }
 }

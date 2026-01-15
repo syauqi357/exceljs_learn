@@ -7,7 +7,7 @@ const pool = createPool({
     database: "exceljs_learning"
 });
 
-export async function inserdatatodb(data) {
+export async function INSERTDATA_TO_DATABASE(data) {
     const connection = await pool.getConnection();
 
     try {
@@ -29,10 +29,10 @@ export async function inserdatatodb(data) {
         }
 
         await connection.commit();
-        console.log("Data inserted into both tables successfully");
+        // console.log("Data inserted into both tables successfully");
     } catch (error) {
         await connection.rollback();
-        console.error("Error inserting data:", error.message);
+        // console.error("Error inserting data:", error.message);
         throw error; 
     } finally {
         connection.release();
@@ -53,7 +53,7 @@ export async function getAllStudents() {
         const [rows] = await pool.query(query);
         return rows;
     } catch (error) {
-        console.error("Error fetching students:", error.message);
+        // console.error("Error fetching students:", error.message);
         return [];
     }
 }
