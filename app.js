@@ -1,44 +1,18 @@
 import ExcelJS from "exceljs";
 import express from "express";
 import multer from "multer";
-import { readExcelFile } from "./exceljsReadfile.js";
+import { READ_EXCEL_FILES } from "./exceljsReadfile.js";
 import { inserdatatodb, getAllStudents } from "./exceljsInsertData.js";
-import rateLimit from "express-rate-limit";
-import slowDown from "express-slow-down";
+import { slow_down } from "./middleware/throttleslowdown.js";
+import {rate_limit} from "./middleware/ratelimit.js";
 
 const app = express();
 const PORT = 3000;
 
-const timertensec = 10 * 1000 // 10 seconds
+
 
 // Configure Multer to use memory storage
 const upload = multer({ storage: multer.memoryStorage() });
-
-const rate_limit = rateLimit ({
-    windowMs: timertensec, // 10 sec
-    max: 10,
-    standardHeaders: 'draft-8', // draft-6: `RateLimit-*` headers; draft-7 & draft-8: combined `RateLimit` header
-    legacyHeaders: false, // Disable the `X-RateLimit-*` headers.
-    ipv6Subnet: 56, // Set to 60 or 64 to be less aggressive, or 52 or 48 to be more aggressive
-    // store: ... , // Redis, Memcached, etc. See below.
-})
-
-const slow_down = slowDown({
-    windowMs: timertensec, // 10 sec
-    delayAfter: 5, // Allow 5 requests per 15 minutes.
-    delayMs: (hits) => hits * 100, // Add 100 ms of delay to every request after the 5th one.
-
-    /**
-     * So:
-     *
-     * - requests 1-5 are not delayed.
-     * - request 6 is delayed by 600ms
-     * - request 7 is delayed by 700ms
-     * - request 8 is delayed by 800ms
-     *
-     * and so on. After 15 minutes, the delay is reset to 0.
-     */
-})
 
 app.use(express.json());
 
@@ -65,7 +39,7 @@ app.post('/upload', upload.single('excelFile'), async (req, res) => {
         await workbook.xlsx.load(req.file.buffer);
 
         // Parse the excel file
-        const data = await readExcelFile(workbook);
+        const data = await READ_EXCEL_FILES(workbook);
 
         // Insert data into database
         await inserdatatodb(data);

@@ -1,0 +1,1 @@
+export const TIMER_FOR_TENSECOND = 10 * 1000 // 10 seconds

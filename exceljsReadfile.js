@@ -1,6 +1,6 @@
 // import Exceljs, {stream} from "exceljs";
 
-export async function readExcelFile(workbook) {
+export async function READ_EXCEL_FILES(workbook) {
 
     try{
         // const workbook = new Exceljs.Workbook();
@@ -15,23 +15,28 @@ export async function readExcelFile(workbook) {
             4: "status"
         }
 
-        const data = []
+        const DATA_JSON_PARSE = []
 
         sheet.eachRow((row, rowNumber) => {
             if(rowNumber === 1) return;
 
             const rowData = {};
-            row.eachCell((cell, colNumber) => {
-            const key = headerMap[colNumber];
-                if(key) {
-                    rowData[key] = cell.value;
-                }
+            
+            // Iterate over the columns defined in headerMap, not just the cells present in the row
+            // This ensures we check for 'status' even if the cell is empty/undefined in the Excel file
+            Object.keys(headerMap).forEach(colNumber => {
+                const key = headerMap[colNumber];
+                const cell = row.getCell(parseInt(colNumber));
+                
+                // Use cell.value if it exists, otherwise undefined (or handle defaults here)
+                rowData[key] = cell.value;
             });
-            data.push(rowData);
+
+            DATA_JSON_PARSE.push(rowData);
         });
         console.log("excel file content :");
-        console.log(data);
-        return data;
+        console.log(DATA_JSON_PARSE);
+        return DATA_JSON_PARSE;
     } catch(error) {
         console.error("error :", error.message);
         return [];
