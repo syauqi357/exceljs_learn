@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Student Data</title>
+    <style>
+        table {
+            width: 50%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Upload Student Excel</h2>
+<form action="" method="post" id="uploadForm" enctype="multipart/form-data">
+    <input type="file" name="excelFile" id="fileUpload" >
+    <button type="submit">Upload</button>
+</form>
+
+<h2>Student List</h2>
+<button onclick="loadStudents()">Refresh Data</button>
+<table id="studentTable">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Age</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- Data will be inserted here -->
+    </tbody>
+</table>
+
+<script>
+    document.getElementById('uploadForm').addEventListener('submit', async function(e) {
+        e.preventDefault()
+        const formdata = new FormData(this)
+
+        try {
+            const response = await fetch('http://localhost:3000/upload', {
+                method: 'POST',
+                body: formdata
+            })
+            const res = await response.json()
+            alert(res.message)
+            loadStudents(); // Refresh table after upload
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Upload failed');
+        }
+    })
+
+    async function loadStudents() {
+        try {
+            const response = await fetch('http://localhost:3000/students');
+            const students = await response.json();
+
+            const tbody = document.querySelector('#studentTable tbody');
+            tbody.innerHTML = ''; // Clear existing rows
+
+            students.forEach(student => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${student.id}</td>
+                    <td>${student.name}</td>
+                    <td>${student.age}</td>
+                    <td>${student.status || '-'}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        } catch (error) {
+            console.error('Error loading students:', error);
+        }
+    }
+
+    // Load data on page load
+    loadStudents();
+
+</script>
+
+</body>
+</html>

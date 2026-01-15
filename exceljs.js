@@ -21,12 +21,7 @@ async function createExcelFile() {
     const sheet = workbook.addWorksheet('student')
 
 // Add header row
-    sheet.addRow(["ID", "Name", "Age"]);
-
-// Add data rows
-    sheet.addRow([1, "Alice", 23]);
-    sheet.addRow([2, "Bob", 25]);
-    sheet.addRow([3, "Charlie", 22]);
+    sheet.addRow(["ID", "Name", "Age", "Status"]);
 
 // Save the workbook to a file
     await workbook.xlsx.writeFile("students.xlsx");

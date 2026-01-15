@@ -1,17 +1,18 @@
-import Exceljs from "exceljs";
+// import Exceljs, {stream} from "exceljs";
 
-async function readExcelFile() {
+export async function readExcelFile(workbook) {
 
     try{
-        const workbook = new Exceljs.Workbook();
-        await workbook.xlsx.readFile("students.xlsx");
+        // const workbook = new Exceljs.Workbook();
+        // await workbook.xlsx.read(stream);
 
         const sheet = workbook.getWorksheet(1);
 
         const headerMap = {
             1: "id",
             2: "name",
-            3: "age"
+            3: "age",
+            4: "status"
         }
 
         const data = []
@@ -21,22 +22,18 @@ async function readExcelFile() {
 
             const rowData = {};
             row.eachCell((cell, colNumber) => {
-const key = headerMap[colNumber];
-if(key) {
-    rowData[key] = cell.value;
-}
+            const key = headerMap[colNumber];
+                if(key) {
+                    rowData[key] = cell.value;
+                }
             });
             data.push(rowData);
         });
         console.log("excel file content :");
         console.log(data);
+        return data;
     } catch(error) {
-        console.error("error :", error.message)
+        console.error("error :", error.message);
+        return [];
     }
 }
-
-readExcelFile();
-
-
-
-
